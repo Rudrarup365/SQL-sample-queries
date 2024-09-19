@@ -1,0 +1,20 @@
+Objects in Database
+1. Tables - Stores data
+2. Views - Shows specific data
+3. Stored procedure - Used to manipulate comples data
+4. Function
+5. Index
+
+Datatypes in database
+1. Int - No quotes are required
+2. Varchar - quotes are required
+3. Date - quotes are required
+4. DateTime - quotes are required
+5. Decimal (total characters, characters after decimal). No quotes are required
+
+How to copy data from one existing table to another existing table
+Select * Into Employee_History From Employee
+Select Empid, Name, Dob Into Employee_History From Employee
+
+Create an run-time table and copy data from another table with specific condition
+Inser into Employee_History Select * from Employee where DOB<'1990-01-01'
