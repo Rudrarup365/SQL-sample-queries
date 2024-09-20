@@ -1,0 +1,28 @@
+Imagine you are managing a subscription service, and you have a table named Subscriptions. The table stores details about each customer's subscription, including the start date (StartDate) and the duration in months (DurationMonths).
+
+You have write a logic to calculate the subscription's end date for each customer
+
+Table Script: 
+
+CREATE TABLE Subscriptions (
+    SubscriptionID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    StartDate DATE,
+    DurationMonths INT
+);
+
+INSERT INTO Subscriptions (SubscriptionID, CustomerName, StartDate, DurationMonths)
+VALUES 
+(1, 'Alice Johnson', '2023-01-15', 6),
+(2, 'Bob Smith', '2023-03-10', 12),
+(3, 'Charlie Davis', '2023-07-05', 3);
+
+select * from [dbo].[Subscriptions]
+
+select CustomerName, StartDate, DurationMonths, DATEADD (MONTH, DurationMonths, StartDate) as Enddate from [dbo].[Subscriptions]
+
+
+CustomerName	StartDate	DurationMonths	Enddate
+Alice Johnson	2023-01-15	6	2023-07-15
+Bob Smith	2023-03-10	12	2024-03-10
+Charlie Davis	2023-07-05	3	2023-10-05
