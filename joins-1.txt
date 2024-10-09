@@ -1,0 +1,55 @@
+Requirement: Create a SQL logic that lists the total salary and the number of employees for each department, along with the total project budget handled by that department and department must have more than 50,000 Rs salary.
+
+---Scripts---
+
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    department_id INT,
+    salary DECIMAL(10,2)
+);
+
+INSERT INTO Employees (employee_id, employee_name, department_id, salary)
+VALUES 
+(1, 'Alice', 101, 60000),
+(2, 'Bob', 102, 55000),
+(3, 'Charlie', 101, 70000),
+(4, 'David', 103, 50000),
+(5, 'Eve', 102, 45000);
+
+------------------------------------------------------
+
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(100)
+);
+
+INSERT INTO Departments (department_id, department_name)
+VALUES 
+(101, 'Engineering'),
+(102, 'HR'),
+(103, 'Finance');
+
+----------------------------------------------------------------------------
+
+CREATE TABLE Projects (
+    project_id INT PRIMARY KEY,
+    project_name VARCHAR(100),
+    department_id INT,
+    project_budget DECIMAL(10,2)
+);
+
+INSERT INTO Projects (project_id, project_name, department_id, project_budget)
+VALUES 
+(1, 'Project Alpha', 101, 150000),
+(2, 'Project Beta', 102, 120000),
+(3, 'Project Gamma', 103, 180000);
+ 
+
+----------------------------------------------------------
+
+
+select d.department_name as [Department Name], sum(e.salary) as [Total Salary], count(e.employee_id) as [Number of Employees], sum(p.project_budget)/count(e.employee_id) as [Project Budget] from 
+Employees as e join Departments as d on e.department_id=d.department_id join Projects as p on p.department_id=d.department_id
+group by d.department_name
+having sum(e.salary) > 50000
