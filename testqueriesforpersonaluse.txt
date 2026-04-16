@@ -1,0 +1,172 @@
+use testing
+
+select * from [dbo].[indian_weather_data]
+select * from [dbo].[indian_weather_data] a cross join [dbo].[indian_weather_data] b 
+
+
+select city, temperature from [dbo].[indian_weather_data] where temperature = (select max(temperature) from [dbo].[indian_weather_data])
+select city, temperature from [dbo].[indian_weather_data] where temperature = (select min(temperature) from [dbo].[indian_weather_data])
+select city, temperature from [dbo].[indian_weather_data] where temperature = (select avg(temperature) from [dbo].[indian_weather_data])
+
+select cast(sum(temperature) as float)/count(*) as average from [dbo].[indian_weather_data]
+
+select city, temperature from [dbo].[indian_weather_data] where temperature > (select cast(sum(temperature) as float)/count(*) from [dbo].[indian_weather_data])
+
+--SELECT CORR(temperature, humidity) AS correlation_coefficient FROM [dbo].[indian_weather_data]
+SELECT
+    (AVG(temperature * humidity) - AVG(temperature) * AVG(humidity)) / (STDEVP(temperature) * STDEVP(humidity)) AS Correlation
+FROM
+    [dbo].[indian_weather_data]
+
+
+create table nulltest2 (id int)
+insert into nulltest1 values (1)
+insert into nulltest1 values (2)
+insert into nulltest1 values (3)
+insert into nulltest1 values (NULL)
+
+insert into nulltest2 values (1)
+insert into nulltest2 values (2)
+insert into nulltest2 values (4)
+insert into nulltest2 values (NULL)
+
+select * from nulltest1
+select * from nulltest2
+
+--SELECT 'Source' AS table_name, COUNT(*) AS record_count FROM nulltest1 UNION ALL SELECT 'Target' AS table_name, COUNT(*) AS record_count FROM nulltest2
+select nulltest1.id a, nulltest2.id b from nulltest1 join nulltest2 on nulltest1.id=nulltest2.id
+select nulltest1.id a, nulltest2.id b from nulltest1 left join nulltest2 on nulltest1.id=nulltest2.id
+select nulltest1.id a, nulltest2.id b from nulltest1 right join nulltest2 on nulltest1.id=nulltest2.id
+--select nulltest1.id a, nulltest2.id b from nulltest1 inner join nulltest2 on nulltest1.id=nulltest2.id
+--select nulltest1.id a, nulltest2.id b from nulltest1 join nulltest2 on nulltest1.id=nulltest2.id
+--select nulltest1.id a, nulltest2.id b from nulltest1 full outer join nulltest2 on nulltest1.id=nulltest2.id
+--select nulltest1.id a, nulltest2.id b from nulltest1 cross join nulltest2-- on nulltest1.id=nulltest2.id
+
+
+select * from Users
+select * from Salaries
+select * from Employees
+insert into Employees values(106, 'Yahoo', 3 , '2023-01-01')
+insert into Salaries values(106, 70000, '2023-01-01')
+select distinct salary from Salaries ORDER by salary Desc LIMIT 1 offset 2
+
+SELECT salary
+FROM (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM Salaries
+) ranked
+WHERE rank = 3
+
+select salary, count(*) from Salaries group by salary having count(*) > 1
+
+select * from Customers
+
+select * from Logs
+
+select a.Num as ConsecutiveNumbers
+from Logs a
+join Logs b
+on a.id=b.id+1 and a.num=b.num
+join Logs c
+on a.id=c.id+2 and a.num=c.num
+
+select * from Logs
+
+with cte as ( 
+select Num, dense_rank() over (order by num) as c from Logs) 
+select Num, c from cte
+where c = 2
+
+
+select * from Logs
+select Num, count(*) from Logs group by Num having count(*)>2
+
+select * from [dbo].[Products]
+select category, count(*) from [dbo].[Products] group by category
+
+
+select category, row_number() over (partition by category order by category) as RN from [dbo].[Products]
+
+select * from [dbo].[Products]
+select * from [dbo].[Orders]
+select * from [dbo].[Customers]
+
+select * from [dbo].[Departments]
+select * from [dbo].[Employees]
+
+select Departments.department_name as Department, Employees.employee_name as Employee, salary
+from [dbo].[Employees]
+join [dbo].[Departments] on Employees.department_id=Departments.department_id
+where (salary) IN (
+select max(salary) as salary
+from Employees group by department_id)
+
+select * from [dbo].[Departments]
+select * from [dbo].[Employees]
+select *, dense_rank() over(order by employees.department_id) from [dbo].[Employees] join [dbo].[Departments] on Employees.department_id=Departments.department_id
+
+
+select * from [dbo].[Employees]
+
+select distinct * from (
+select * from [dbo].[Employees] where salary > 29000 UNION ALL
+select * from [dbo].[Employees] where salary > 27000) as uni
+
+select * from [dbo].[Employees] where salary > 29000 UNION
+select * from [dbo].[Employees] where salary > 27000
+
+select * from [dbo].[Employees]
+select department_id, sum(salary) from [dbo].[Employees]
+where salary >=25000
+group by department_id
+having sum(salary)>30000
+
+
+select * from weather
+
+select t.id	
+from weather as t join weather as y
+ON DATEDIFF(DAY, y.Recorddate, t.Recorddate) = 1
+and t.Temperature > y.Temperature
+
+
+
+create table market (productID int, IndiaMarket int, AmericaMarket int)
+insert into market values (1234,12,NULL)
+insert into market values (1235,NULL,15)
+insert into market values (1236,13,NULL)
+insert into market values (1234,NULL,22)
+insert into market values (1235,23,NULL)
+insert into market values (1236,NULL,24)
+
+update market set IndiaMarket=14 where IndiaMarket is NULL and productID=1235
+
+select * from market
+
+SELECT 
+    productID,
+    SUM(IndiaMarket) AS IndiaMarket,
+    SUM(AmericaMarket) AS AmericaMarket
+FROM market
+GROUP BY productID
+ORDER BY productID;
+
+
+--SELECT 
+--    productID,
+--    SUM(IndiaMarket) AS IndiaMarket,
+--    SUM(AmericaMarket) AS AmericaMarket
+--FROM market
+--GROUP BY productID
+--ORDER BY productID;
+
+
+select cast(pi() as float)
+select cast(pi() as real)
+
+SELECT 
+  CAST((val / 128) % 2 AS CHAR(1)) +
+  CAST((val / 64) % 2 AS CHAR(1)) +
+  CAST((val / 32) % 2 AS CHAR(1)) +
+  CAST((val / 16) % 2 AS CHAR(1)) as BinaryString
+FROM (SELECT 3 as val) t;
